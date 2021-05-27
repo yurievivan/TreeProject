@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        version="2.1"
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+            http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    <named-native-query name="getPath">
+        <query>
+            <![CDATA[         
+            WITH RECURSIVE r(id, name, parent_id, level) AS
+            (SELECT id, name, parent_id, 1
+            FROM tree
+            WHERE id = :id
+            UNION ALL
+            SELECT t.id, t.name, t.parent_id, level+1
+            FROM tree t, r
+            WHERE t.id = r.parent_id )
+            SELECT string_agg(parents.name, :delimiter) FROM (
+            SELECT name, level FROM r
+            ORDER BY level DESC) parents
+            ]]>   
+        </query>
+        <hint name="org.hibernate.comment" value="Get Path By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getRoot" 
+                        result-class="adjacency.list.tree.Node">
+        <query>
+             <![CDATA[        
+            WITH RECURSIVE r AS
+            (SELECT *
+            FROM tree
+            WHERE id = :id
+            UNION ALL
+            SELECT t.*
+            FROM tree t, r
+            WHERE t.id = r.parent_id )
+            SELECT * FROM r WHERE parent_id is null
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Root By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllParents" 
+                        result-set-mapping="NodeWithLevelMapping">
+        <query> 
+            <![CDATA[        
+            WITH RECURSIVE r(id, name, parent_id, level) AS
+            (SELECT tr.id, tr.name, tr.parent_id, 1
+	    FROM tree tl
+	    LEFT JOIN tree tr 
+            ON tl.parent_id = tr.id
+	    WHERE tl.id = :id
+            UNION ALL
+            SELECT t.id, t.name, t.parent_id, level+1
+            FROM tree t, r
+            WHERE t.id = r.parent_id )
+            SELECT id, name, parent_id, (SELECT max(level) FROM r) - level + 1 AS level
+            FROM r
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Parents By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllСhildren" 
+                        result-set-mapping="NodeWithLevelMapping">
+        <query>
+            <![CDATA[         
+            WITH RECURSIVE r (id, parent_id, name, level) AS
+            (SELECT id, parent_id, name, 1
+            FROM tree
+            WHERE parent_id = :id
+            UNION ALL
+            SELECT t.id, t.parent_id, t.name, tp.level + 1
+            FROM r tp INNER JOIN tree t
+            ON tp.id = t.parent_id)
+            SELECT * FROM r
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Сhildren By ID"/>
+    </named-native-query>
+    
+    <named-query name="delete">
+        <query>
+           <![CDATA[
+            DELETE FROM Node WHERE id = :id
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Delete Node By ID"/>
+    </named-query>
+    
+    <sql-result-set-mapping name="NodeWithLevelMapping">
+        <entity-result entity-class="adjacency.list.tree.Node"/>
+        <column-result name="level" class="java.lang.Integer"/>
+    </sql-result-set-mapping>
+    
+</entity-mappings>

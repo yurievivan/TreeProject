@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        version="2.1"
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+            http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    <named-native-query name="getPath">
+        <query>
+           <![CDATA[         
+            WITH parents AS
+            (SELECT p.id, p.name, count(*) - l.level AS level
+            FROM tree_Path t,
+            (SELECT descendant, count(*) AS LEVEL
+            FROM tree_path
+            GROUP BY descendant) l,
+            (SELECT *
+            FROM file_name f
+            INNER JOIN tree_Path t ON f.id = t.ancestor
+            WHERE t.descendant=:id) p
+            WHERE p.descendant = t.descendant AND l.descendant=p.id
+            GROUP BY p.id, p.name, l.level
+            ORDER BY level DESC)
+            SELECT string_agg(name, :delimiter)
+            FROM parents
+            ]]>   
+        </query>
+        <hint name="org.hibernate.comment" value="Get Path By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getRoot" 
+                        result-class="closure.table.tree.FileName">
+        <query>
+           <![CDATA[        
+            WITH parents AS
+            (SELECT p.id, p.name, count(*) - l.level AS level
+            FROM tree_Path t,
+            (SELECT descendant, count(*) AS level
+            FROM tree_path
+            GROUP BY descendant) l,
+            (SELECT *
+            FROM file_name f
+            INNER JOIN tree_Path t ON f.id = t.ancestor
+            WHERE t.descendant=:id AND t.descendant != t.ancestor) p
+            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor AND l.descendant=p.id
+            GROUP BY p.id, p.name, l.level)
+            SELECT id, name
+            FROM parents
+            WHERE level = (SELECT MAX(level) FROM parents)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Root By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllParents" 
+                        result-set-mapping="FileNameWithLevelMapping">
+        <query> 
+            <![CDATA[        
+            WITH parents AS
+            (SELECT p.id, p.name, count(*) - l.level AS level
+            FROM tree_Path t,
+            (SELECT descendant, count(*) AS level
+            FROM tree_path
+            GROUP BY descendant) l,
+            (SELECT *
+            FROM file_name f
+            INNER JOIN tree_Path t ON f.id = t.ancestor
+            WHERE t.descendant=:id AND t.descendant != t.ancestor) p
+            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor AND l.descendant=p.id
+            GROUP BY p.id, p.name, l.level)
+            SELECT id, name, (SELECT max(level) FROM parents) - level + 1 AS level
+            FROM parents
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Parents By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllСhildren" 
+                        result-set-mapping="FileNameWithLevelMapping">
+        <query>
+            <![CDATA[         
+            SELECT p.id, p.name, count(*) - l.level AS level
+            FROM tree_Path t,
+            (SELECT count(*) -1 AS level
+            FROM tree_path
+            WHERE descendant = :id) l,
+            (SELECT * FROM file_name f
+            INNER JOIN tree_Path t ON f.id = t.descendant
+            WHERE t.ancestor=:id AND t.descendant!=t.ancestor) p
+            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor
+            GROUP BY p.id, p.name, l.level
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Сhildren By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="delete">
+        <query>
+           <![CDATA[
+            DELETE 
+            FROM file_name
+            WHERE id IN
+            (SELECT descendant
+            FROM tree_Path 
+            WHERE ancestor=:id)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Delete Node By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="addChildren">
+        <query>
+           <![CDATA[
+            INSERT INTO tree_path(ancestor, descendant) 
+            SELECT a.ancestor, d.descendant
+            FROM
+            (SELECT ancestor
+            FROM tree_Path
+            WHERE descendant = :parentId) a,
+            (SELECT descendant 
+            FROM tree_path 
+            WHERE ancestor = :childId) d
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Add Subtree By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="move-addChildren">
+        <query>
+           <![CDATA[
+            INSERT INTO tree_path(ancestor, descendant)
+            SELECT parent.ancestor, child.descendant
+	    FROM
+	    (SELECT a.ancestor
+            FROM
+            (SELECT ancestor
+            FROM tree_Path
+            WHERE descendant = :parentId) a
+            
+	    LEFT JOIN
+            
+            (SELECT ancestor 
+            FROM tree_path 
+            WHERE descendant = :childId) d
+            
+	    ON a.ancestor = d.ancestor
+	    WHERE d.ancestor IS NULL) parent,
+            	
+            (SELECT descendant 
+            FROM tree_path 
+            WHERE ancestor = :childId) child
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Move Subtree By ID (add children)"/>
+    </named-native-query>
+    
+    <named-native-query name="move-deleteParents">
+        <query>
+           <![CDATA[
+            DELETE 
+            FROM tree_Path t
+	    WHERE t.descendant IN
+			
+	    (SELECT descendant 
+	    FROM tree_Path 
+	    WHERE ancestor = :childId)
+			
+	    AND t.ancestor IN
+			
+            (SELECT a.ancestor
+            FROM
+            (SELECT ancestor
+            FROM tree_Path
+            WHERE descendant = :childId AND descendant != ancestor) a
+	    LEFT JOIN
+            (SELECT ancestor 
+            FROM tree_path 
+            WHERE descendant = :parentId AND descendant != ancestor) d
+	    ON a.ancestor = d.ancestor
+	    WHERE d.ancestor IS NULL)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Move Subtree By ID (delete parents)"/>
+    </named-native-query>
+    
+    <sql-result-set-mapping name="FileNameWithLevelMapping">
+        <entity-result entity-class="closure.table.tree.FileName"/>
+        <column-result name="level" class="java.lang.Integer"/>
+    </sql-result-set-mapping>
+    
+</entity-mappings>

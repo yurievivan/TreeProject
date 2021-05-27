@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+    version="2.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+            http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    
+    <named-native-query name="getAllСhildren" 
+                        result-set-mapping="FilesWithLevelMapping">
+        <query> 
+            <![CDATA[        
+            SELECT *, ( length(path) - length(replace(path, :delimiter, ''))
+            - (length(:parentPath) - length(replace(:parentPath, :delimiter, '')) + 1) + 1) as level 
+            FROM files 
+            WHERE path like REPLACE (:parentPath || :delimiter ||'%','\','\\')
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Сhildren By Parent Path"/>
+    </named-native-query>
+      
+    <named-native-query name="getAllParents" 
+                        result-set-mapping="FilesWithLevelMapping">
+        <query> 
+            <![CDATA[        
+            WITH RECURSIVE cte (PATH, LEVEL) AS
+            (SELECT split_part(PATH, :delimiter, 1), 1 AS LEVEL
+             FROM files
+             WHERE id = :id
+             UNION ALL 
+             SELECT CONCAT (c.path, :delimiter, split_part(f.path, :delimiter, LEVEL+1)), LEVEL + 1
+             FROM cte c,
+                  files f
+             WHERE f.id = :id AND f.path!=c.path)
+             
+          SELECT f.*, c.level
+          FROM cte c,
+               files f
+          WHERE 
+                f.path=c.path 
+                AND c.level != 
+                (SELECT MAX(level) 
+                FROM cte)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Parents By Paths"/>
+    </named-native-query>
+    
+    <named-native-query name="getRoot" 
+                        result-class="path.enumeration.tree.Files">
+        <query>
+             <![CDATA[        
+            SELECT * 
+            FROM files
+            WHERE path = split_part(:path, :delimiter, 1)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Root By Path"/>
+    </named-native-query>
+    
+    
+    <named-native-query name="delete">
+        <query>
+           <![CDATA[
+            DELETE
+            FROM Files
+            WHERE path like REPLACE (:path || :delimiter ||'%','\','\\') OR path = :path
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Delete Node By Path"/>
+    </named-native-query>
+    
+    <named-native-query name="move">
+        <query>
+           <![CDATA[
+		UPDATE files
+		SET PATH = REPLACE(PATH, :subNodeParentPath, :parentPath)
+		WHERE  path like REPLACE (:subNodeParentPath || :delimiter ||'%','\','\\') OR path = :subNodeParentPath
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Move Node By Path"/>
+    </named-native-query>
+    
+    <sql-result-set-mapping name="FilesWithLevelMapping">
+        <entity-result entity-class="path.enumeration.tree.Files"/>
+        <column-result name="level" class="java.lang.Integer"/>
+    </sql-result-set-mapping>
+    
+</entity-mappings>
