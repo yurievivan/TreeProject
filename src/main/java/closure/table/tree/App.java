@@ -1,11 +1,12 @@
 package closure.table.tree;
 
+import tree.initialization.ClosureTreeInitialization;
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tree.TreeInitialization;
-import util.DataStorage;
+import tree.initialization.TreeInitialization;
+import data.storage.DataStorage;
 
 /**
  *

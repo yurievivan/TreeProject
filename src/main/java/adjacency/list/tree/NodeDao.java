@@ -3,7 +3,7 @@ package adjacency.list.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import tree.TreeDao;
+import tree.dao.TreeDao;
 import org.hibernate.Session;
 import java.util.List;
 import java.util.Map;
@@ -154,14 +154,4 @@ public class NodeDao implements TreeDao<Node> {
         session.getTransaction().commit();
         return nodes;
     }
-
-    public void inset(String path) {
-        Session session = closure.table.tree.HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        session.createNativeQuery("INSERT INTO test(title) VALUES (?)")
-                .setParameter(1, path)
-                .executeUpdate();
-        session.getTransaction().commit();
-    }
-
 }

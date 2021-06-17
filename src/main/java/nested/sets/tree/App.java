@@ -1,8 +1,9 @@
 package nested.sets.tree;
 
-import util.DataStorage;
+import tree.initialization.NestedSetsInitialization;
+import data.storage.DataStorage;
 import java.io.File;
-import tree.TreeInitialization;
+import tree.initialization.TreeInitialization;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

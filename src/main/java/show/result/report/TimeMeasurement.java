@@ -1,8 +1,6 @@
 package show.result.report;
 
-import adjacency.list.tree.AdjacencyTreeInitialization;
 import adjacency.list.tree.NodeDao;
-import closure.table.tree.ClosureTreeInitialization;
 import closure.table.tree.FileNameDao;
 import closure.table.tree.TreePathDao;
 import java.io.File;
@@ -13,12 +11,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nested.sets.tree.NestedSetsDao;
-import nested.sets.tree.NestedSetsInitialization;
 import path.enumeration.tree.FilesDao;
-import path.enumeration.tree.PathTreeInitialization;
-import tree.Dao;
-import tree.TreeDao;
-import tree.TreeInitialization;
+import tree.dao.Dao;
+import tree.dao.TreeDao;
+import tree.initialization.AdjacencyTreeInitialization;
+import tree.initialization.ClosureTreeInitialization;
+import tree.initialization.NestedSetsInitialization;
+import tree.initialization.PathTreeInitialization;
+import tree.initialization.TreeInitialization;
 
 /**
  *
@@ -58,7 +58,7 @@ public class TimeMeasurement {
         Map<Dao<?>, TreeInitialization<?>> treeInitMap = getTreeInitMap(folder);
         treeInitMap.forEach((k, v) -> {
             v.initTree();
-            k.save((List)v.getTree());
+            k.save((List) v.getTree());
         });
     }
 
@@ -146,5 +146,4 @@ public class TimeMeasurement {
         treeInitMap.put(TreeMeasure.PATH_ENUMERATION, new PathTreeInitialization(folder));
         return treeInitMap;
     }
-
 }

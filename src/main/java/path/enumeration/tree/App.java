@@ -1,11 +1,12 @@
 package path.enumeration.tree;
 
-import util.DataStorage;
+import tree.initialization.PathTreeInitialization;
+import data.storage.DataStorage;
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tree.TreeInitialization;
+import tree.initialization.TreeInitialization;
 
 /**
  *

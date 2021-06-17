@@ -10,7 +10,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import tree.TreeDao;
+import tree.dao.TreeDao;
 
 /**
  *
@@ -212,14 +212,4 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
             v.setRight(v.getRight() - delta + index);
         });
     }
-
-    public void inset(String path) {
-        Session session = closure.table.tree.HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        session.createNativeQuery("INSERT INTO test(title) VALUES (?)")
-                .setParameter(1, path)
-                .executeUpdate();
-        session.getTransaction().commit();
-    }
-
 }

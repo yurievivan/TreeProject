@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import tree.TreeDao;
+import tree.dao.TreeDao;
 
 /**
  *
@@ -164,14 +164,4 @@ public class FileNameDao implements TreeDao<FileName> {
         session.getTransaction().commit();
         return nodes;
     }
-    
-    public void inset(String path) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        session.createNativeQuery("INSERT INTO test(title) VALUES (?)")
-                .setParameter(1, path)
-                .executeUpdate();
-        session.getTransaction().commit();
-    }
-
 }

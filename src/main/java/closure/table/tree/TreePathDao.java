@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import tree.Dao;
+import tree.dao.Dao;
 
 /**
  *

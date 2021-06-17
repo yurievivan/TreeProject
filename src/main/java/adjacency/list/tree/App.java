@@ -1,11 +1,12 @@
 package adjacency.list.tree;
 
-import util.DataStorage;
+import data.storage.DataStorage;
+import tree.initialization.AdjacencyTreeInitialization;
 import java.io.File;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tree.TreeInitialization;
+import tree.initialization.TreeInitialization;
 
 /**
  *

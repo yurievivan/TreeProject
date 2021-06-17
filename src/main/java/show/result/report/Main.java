@@ -1,6 +1,6 @@
 package show.result.report;
 
-import util.DataStorage;
+import data.storage.DataStorage;
 import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

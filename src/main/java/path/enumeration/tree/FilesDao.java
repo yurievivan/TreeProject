@@ -11,7 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import tree.TreeDao;
+import tree.dao.TreeDao;
 
 /**
  *
