@@ -12,8 +12,8 @@
   <li>get a full path to the node (method name getPath);</li>
   <li>get a list of nodes by name (method name getByName).</li>
 </ul>
-<p>All of the above operations are contained in interface <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/tree/TreeDao.java">TreeDao</a>.</p>
-<p>Basic operations not only related to the tree are contained in interface <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/tree/Dao.java">Dao</a>. For example, such operations as get, save, delete.</p>
+<p>All of the above operations are contained in interface <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/tree/dao/TreeDao.java">TreeDao</a>.</p>
+<p>Basic operations not only related to the tree are contained in interface <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/tree/dao/Dao.java">Dao</a>. For example, such operations as get, save, delete.</p>
 <h2>Adjacency List</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/b2c/ee6/216/b2cee6216e8a723f590d55d1223261a6.png" alt="Adjacency List"></div>
 </br></br>
