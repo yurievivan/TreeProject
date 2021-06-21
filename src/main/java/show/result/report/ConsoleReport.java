@@ -38,7 +38,7 @@ public class ConsoleReport extends Report {
 
         for (MeasureModel d : data) {
             table.add(String.format(TABLE_FORMAT,
-                    d.getDesign(),
+                    d.getDesignType(),
                     d.getChildNodesTime(),
                     d.getParentNodesTime(),
                     d.getDeleteNodeTime(),

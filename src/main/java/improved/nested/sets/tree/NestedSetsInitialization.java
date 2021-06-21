@@ -1,11 +1,12 @@
-package tree.initialization;
+package improved.nested.sets.tree;
 
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import nested.sets.tree.NestedSetsTree;
+import tree.initialization.TreeInitialization;
+import tree.initialization.InitNestedSetsModel;
 
 /**
  *
@@ -31,6 +32,7 @@ public class NestedSetsInitialization extends TreeInitialization<NestedSetsTree>
     public void initTree() {
         if (file == null) return;
         NestedSetsTree parent = new NestedSetsTree(file.getName(), counter, 0);
+        parent.setLevel(level);
         InitNestedSetsModel<NestedSetsTree> parentNode = new InitNestedSetsModel<>(parent, file, level);
         stack.add(parentNode);
         tree.add(parent);
@@ -50,6 +52,7 @@ public class NestedSetsInitialization extends TreeInitialization<NestedSetsTree>
         if (files == null) return;
         for (File f : files) {
             NestedSetsTree child = new NestedSetsTree(f.getName(), 0, 0);
+            child.setLevel(level);
             tree.add(child);
             if (isContainChildren(f)) {
                 InitNestedSetsModel<NestedSetsTree> childNode = new InitNestedSetsModel<>(child, f, level);
@@ -81,4 +84,13 @@ public class NestedSetsInitialization extends TreeInitialization<NestedSetsTree>
         File[] files = f != null ? f.listFiles() : null;
         return files != null && files.length > 0;
     }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
 }

@@ -17,6 +17,7 @@ public class Main {
         try {
             File folder = new File(DataStorage.INIT.getValue());
             TimeMeasurement tm = new TimeMeasurement(folder);
+            tm.initTree();
             tm.runGetChildren(DataStorage.GET_CHILDREN.getValue());
             tm.runGetParents(DataStorage.GET_PARENTS.getValue());
             runMove(tm);
@@ -46,7 +47,9 @@ public class Main {
     private static void close() {
         adjacency.list.tree.HibernateUtil.close();
         closure.table.tree.HibernateUtil.close();
+        improved.closure.table.tree.HibernateUtil.close();
         nested.sets.tree.HibernateUtil.close();
+        improved.nested.sets.tree.HibernateUtil.close();
         path.enumeration.tree.HibernateUtil.close();
     }
 }

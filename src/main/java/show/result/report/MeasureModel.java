@@ -6,23 +6,15 @@ package show.result.report;
  */
 public class MeasureModel {
 
-    private String design;
+    private DesignType designType;
     private long childNodesTime;
     private long parentNodesTime;
     private long deleteNodeTime;
     private long addNodeTime;
     private long moveNodeTime;
 
-    public MeasureModel(String design) {
-        this.design = design;
-    }
-
-    public String getDesign() {
-        return design;
-    }
-
-    public void setDesign(String design) {
-        this.design = design;
+    public MeasureModel(DesignType designType) {
+        this.designType = designType;
     }
 
     public long getChildNodesTime() {
@@ -65,9 +57,16 @@ public class MeasureModel {
         this.moveNodeTime = moveNodeTime;
     }
 
-    @Override
-    public String toString() {
-        return "MeasureModel{" + "design=" + design + ", childNodesTime=" + childNodesTime + ", parentNodesTime=" + parentNodesTime + ", deleteNodeTime=" + deleteNodeTime + ", addNodeTime=" + addNodeTime + ", moveNodeTime=" + moveNodeTime + '}';
+    public DesignType getDesignType() {
+        return designType;
     }
 
+    public void setDesignType(DesignType designType) {
+        this.designType = designType;
+    }
+
+    @Override
+    public String toString() {
+        return "MeasureModel{" + "designType=" + designType + ", childNodesTime=" + childNodesTime + ", parentNodesTime=" + parentNodesTime + ", deleteNodeTime=" + deleteNodeTime + ", addNodeTime=" + addNodeTime + ", moveNodeTime=" + moveNodeTime + '}';
+    }
 }

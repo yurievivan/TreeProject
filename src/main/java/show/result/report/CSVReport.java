@@ -37,7 +37,7 @@ public class CSVReport extends Report {
         try (CSVPrinter csvPrinter = new CSVPrinter(sw, CSVFormat.EXCEL.withDelimiter(DELIMITER).withHeader(HEADER))) {
             for (MeasureModel m : data) {
                 csvPrinter.printRecord(
-                        m.getDesign(),
+                        m.getDesignType(),
                         m.getChildNodesTime(),
                         m.getParentNodesTime(),
                         m.getDeleteNodeTime(),

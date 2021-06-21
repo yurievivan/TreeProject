@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings
+        version="2.1"
+        xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
+            http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    <named-native-query name="getPath">
+        <query>
+           <![CDATA[           
+           SELECT string_agg(ancestor.name,:delimiter ORDER BY ancestor.lft ASC) 
+           FROM nested_sets2 child
+           INNER JOIN nested_sets2 ancestor
+           ON (child.lft BETWEEN ancestor.lft AND ancestor.rgt)
+           WHERE child.id = :id
+            ]]>   
+        </query>
+        <hint name="org.hibernate.comment" value="Get Path By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getRoot" 
+                        result-class="nested.sets.tree.NestedSetsTree">
+        <query>
+           <![CDATA[        
+              SELECT *
+              FROM   nested_sets2
+              WHERE  lft = (SELECT Min(lft)
+                            FROM   nested_sets2) 
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Root By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="delete">
+        <query>
+           <![CDATA[
+            DELETE FROM nested_sets2 WHERE id IN (
+            SELECT descendant.id FROM nested_sets2 parent
+            INNER JOIN nested_sets2 descendant
+            ON (descendant.lft BETWEEN parent.lft and parent.rgt)
+            WHERE parent.id = :id)
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Delete Node By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllParents" 
+                        result-class="improved.nested.sets.tree.NestedSetsTree">
+        <query> 
+            <![CDATA[        
+               SELECT p.*
+               FROM nested_sets2 n, nested_sets2 p
+               WHERE n.id = :id AND p.lft < n.lft AND p.rgt > n.rgt
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Parents By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="getAllСhildren" 
+                        result-class="improved.nested.sets.tree.NestedSetsTree">
+        <query>
+            <![CDATA[         
+               SELECT ch.id, ch.name, ch.lft, ch.rgt, (ch.level - :parentLevel) as level
+               FROM nested_sets2 n, nested_sets2 ch
+               WHERE n.id = :id AND ch.lft > n.lft AND ch.rgt < n.rgt
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Get Сhildren By ID"/>
+    </named-native-query>
+    
+    <named-native-query name="update-nesting-level">
+        <query>
+           <![CDATA[
+            UPDATE nested_sets2 AS ns
+            SET level = nl.level
+            FROM
+            (SELECT descendant.id, COUNT(*) AS level
+            FROM nested_sets2 AS descendant,
+            nested_sets2 AS parent
+            WHERE descendant.lft BETWEEN parent.lft AND parent.rgt 
+            GROUP BY descendant.id, descendant.name, descendant.lft, descendant.rgt) AS nl
+            WHERE ns.id = nl.id AND ns.level != nl.level
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Update nesting level"/>
+    </named-native-query>
+    
+    <named-native-query name="update-level-by-parentId">
+        <query>
+           <![CDATA[
+            UPDATE nested_sets2 AS ns
+            SET level = nl.level
+            FROM
+            (SELECT descendant.id, COUNT(*) AS level
+            FROM 	    
+             (SELECT ch.*
+              FROM nested_sets2 n, nested_sets2 ch
+              WHERE n.id = :id AND ch.lft > n.lft AND ch.rgt < n.rgt) AS descendant,
+            nested_sets2 AS parent
+            WHERE descendant.lft BETWEEN parent.lft AND parent.rgt 
+            GROUP BY descendant.id, descendant.name, descendant.lft, descendant.rgt) AS nl
+            WHERE ns.id = nl.id AND ns.level != nl.level
+            ]]>
+        </query>
+        <hint name="org.hibernate.comment" value="Update level by parentID"/>
+    </named-native-query>
+    
+    <sql-result-set-mapping name="NestedSetsTreeWithLevelMapping">
+        <entity-result entity-class="nested.sets.tree.NestedSetsTree"/>
+        <column-result name="level" class="java.lang.Integer"/>
+    </sql-result-set-mapping>
+    
+</entity-mappings>

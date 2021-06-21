@@ -94,9 +94,9 @@ public class FilesDao implements TreeDao<Files> {
                 .getResultList();
         session.getTransaction().commit();
         Map<Integer, List<Files>> result = new HashMap<>();
-        children.forEach(record -> {
-            Files child = (Files) record[0];
-            Integer level = (Integer) record[1];
+        children.forEach(rec -> {
+            Files child = (Files) rec[0];
+            Integer level = (Integer) rec[1];
             List<Files> list = result.computeIfAbsent(level, k -> new ArrayList<>());
             list.add(child);
         });
@@ -113,9 +113,9 @@ public class FilesDao implements TreeDao<Files> {
                 .getResultList();
         session.getTransaction().commit();
         Map<Integer, Files> result = new HashMap<>();
-        parents.forEach(record -> {
-            Files parent = (Files) record[0];
-            Integer level = (Integer) record[1];
+        parents.forEach(rec -> {
+            Files parent = (Files) rec[0];
+            Integer level = (Integer) rec[1];
             result.put(level, parent);
         });
         return result;

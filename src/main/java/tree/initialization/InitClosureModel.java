@@ -62,27 +62,11 @@ public class InitClosureModel<T> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final InitClosureModel<?> other = (InitClosureModel<?>) obj;
-        if (!Objects.equals(this.fileName, other.fileName)) {
-            return false;
-        }
-        if (!Objects.equals(this.parents, other.parents)) {
-            return false;
-        }
-        if (!Objects.equals(this.file, other.file)) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InitClosureModel<?> that = (InitClosureModel<?>) o;
+        return Objects.equals(getFileName(), that.getFileName()) && Objects.equals(getParents(), that.getParents()) && Objects.equals(getFile(), that.getFile());
     }
 
     @Override

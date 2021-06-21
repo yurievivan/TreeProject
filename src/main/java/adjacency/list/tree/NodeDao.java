@@ -76,9 +76,9 @@ public class NodeDao implements TreeDao<Node> {
         List<Object[]> children = session.createNamedQuery("getAllСhildren").setParameter("id", node.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, List<Node>> result = new HashMap<>();
-        children.forEach(record -> {
-            Node child = (Node) record[0];
-            Integer level = (Integer) record[1];
+        children.forEach(rec -> {
+            Node child = (Node) rec[0];
+            Integer level = (Integer) rec[1];
             List<Node> list = result.computeIfAbsent(level, k -> new ArrayList<>());
             list.add(child);
         });
@@ -92,9 +92,9 @@ public class NodeDao implements TreeDao<Node> {
         List<Object[]> parents = session.createNamedQuery("getAllParents").setParameter("id", node.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, Node> result = new HashMap<>();
-        parents.forEach(record -> {
-            Node parent = (Node) record[0];
-            Integer level = (Integer) record[1];
+        parents.forEach(rec -> {
+            Node parent = (Node) rec[0];
+            Integer level = (Integer) rec[1];
             result.put(level, parent);
         });
         return result;
