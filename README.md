@@ -1,6 +1,7 @@
 <h2 align="center"> Ways to store trees in relational databases using ORM Hibernate.</h1>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/5ce/aba/82c/5ceaba82c9e579300eea7b8ed9e8c2f7.PNG"></div>
 </br></br>
+<p>A folder structure on the file system is used as a tree, which is loaded into the database table(s). The nesting level in my SQL queries is a calculated value, it's mean that value is not present in the table(s). Except for the designs "Closure Table" and "Nested sets", which have two implementations with and without column name level in DB table.</p>
 <p><b>Basic operations for working with tree:</b></p>
  <ul>
   <li>get all descendants with a nesting level (method name getAllChildren);</li>
@@ -28,6 +29,13 @@
 <p><b>Entities: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/FileName.java">FileName</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/TreePath.java">TreePath</a>.</p>
 <p><b>Data Access Objects: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/FileNameDao.java">FileNameDao</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/TreePathDao.java">TreePathDao</a>.</p>
 <p><b>Named queries: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/resources/closureTableQueries.hbm.xml">closureTableQueries.hbm.xml</a>.</p>
+<hr>
+<p>Implementation with an additional column 'level' in the FILE_NAME table. For more faster selection of all ancestors and descendants with a nesting level. In this implementation, the nesting level is recalculated only when the tree changes.</p>
+<p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/improved/closure/table/tree">improved.closure.table.tree</a>.</p>
+<p><b>Entities: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/closure/table/tree/FileName.java">FileName</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/closure/table/tree/TreePath.java">TreePath</a>.</p>
+<p><b>Data Access Objects: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/closure/table/tree/FileNameDao.java">FileNameDao</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/closure/table/tree/TreePathDao.java">TreePathDao</a>.</p>
+<p><b>Named queries: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/resources/improvedClosureTableQueries.hbm.xml">improvedClosureTableQueries.hbm.xml</a>.</p>
+<p>The main changes affected named queries and data access objects.</p>
 <h2>Nested sets</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/770/98a/934/77098a9345c609ea0057827bef6c5249.png" alt="Nested sets"></div>
 </br></br>
@@ -35,6 +43,13 @@
 <p><b>Entity: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/nested/sets/tree/NestedSetsTree.java">NestedSetsTree</a>.</p>
 <p><b>Data Access Object: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/nested/sets/tree/NestedSetsDao.java">NestedSetsDao</a>.</p>
 <p><b>Named queries: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/resources/nestedSetsQueries.hbm.xml">nestedSetsQueries.hbm.xml</a>.</p>
+<hr>
+<p>Implementation with an additional column 'level' in the NESTED_SETS table. For more faster selection of all ancestors and descendants with a nesting level. In this implementation, the nesting level is recalculated only when the tree changes.</p>
+<p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/improved/nested/sets/tree">improved.nested.sets.tree</a>.</p>
+<p><b>Entity: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/nested/sets/tree/NestedSetsTree.java">NestedSetsTree</a>.</p>
+<p><b>Data Access Object: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/improved/nested/sets/tree/NestedSetsDao.java">NestedSetsDao</a>.</p>
+<p><b>Named queries: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/resources/improvedNestedSetsQueries.hbm.xml">improvedNestedSetsQueries.hbm.xml</a>.</p>
+<p>The main changes affected named queries and data access objects.</p>
 <h2>Materialized Path</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/454/89c/f90/45489cf9091a01a561fbfda628825e4c.png" alt="Materialized Path"></div>
 </br></br>
