@@ -9,22 +9,19 @@
         <query>
            <![CDATA[         
             WITH parents AS
-            (SELECT p.id, p.name, count(*) - l.level AS level
+            (SELECT p.id, p.name, COUNT(*) AS LEVEL 
             FROM tree_Path t,
-            (SELECT descendant, count(*) AS LEVEL
-            FROM tree_path
-            GROUP BY descendant) l,
             (SELECT *
             FROM file_name f
             INNER JOIN tree_Path t ON f.id = t.ancestor
             WHERE t.descendant=:id) p
-            WHERE p.descendant = t.descendant AND l.descendant=p.id
-            GROUP BY p.id, p.name, l.level
-            ORDER BY level DESC)
-            SELECT string_agg(name, :delimiter)
+            WHERE p.ancestor = t.ancestor
+            GROUP BY p.id, p.name)
+            SELECT string_agg(name, :delimiter ORDER BY LEVEL DESC)
             FROM parents
             ]]>   
         </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
         <hint name="org.hibernate.comment" value="Get Path By ID"/>
     </named-native-query>
     
@@ -33,20 +30,18 @@
         <query>
            <![CDATA[        
             WITH parents AS
-            (SELECT p.id, p.name, count(*) - l.level AS level
+            (SELECT p.id, p.name, COUNT(*) AS LEVEL 
             FROM tree_Path t,
-            (SELECT descendant, count(*) AS level
-            FROM tree_path
-            GROUP BY descendant) l,
             (SELECT *
             FROM file_name f
             INNER JOIN tree_Path t ON f.id = t.ancestor
             WHERE t.descendant=:id AND t.descendant != t.ancestor) p
-            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor AND l.descendant=p.id
-            GROUP BY p.id, p.name, l.level)
-            SELECT id, name
+            WHERE p.ancestor = t.ancestor
+            GROUP BY p.id, p.name
+            ORDER BY LEVEL DESC)
+            SELECT * 
             FROM parents
-            WHERE level = (SELECT MAX(level) FROM parents)
+            LIMIT 1
             ]]>
         </query>
         <hint name="org.hibernate.comment" value="Get Root By ID"/>
@@ -56,20 +51,14 @@
                         result-set-mapping="FileNameWithLevelMapping">
         <query> 
             <![CDATA[        
-            WITH parents AS
-            (SELECT p.id, p.name, count(*) - l.level AS level
+            SELECT p.id, p.name, ROW_NUMBER() OVER(ORDER BY COUNT(*) DESC) AS LEVEL 
             FROM tree_Path t,
-            (SELECT descendant, count(*) AS level
-            FROM tree_path
-            GROUP BY descendant) l,
             (SELECT *
             FROM file_name f
             INNER JOIN tree_Path t ON f.id = t.ancestor
             WHERE t.descendant=:id AND t.descendant != t.ancestor) p
-            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor AND l.descendant=p.id
-            GROUP BY p.id, p.name, l.level)
-            SELECT id, name, (SELECT max(level) FROM parents) - level + 1 AS level
-            FROM parents
+            WHERE p.ancestor = t.ancestor
+            GROUP BY p.id, p.name
             ]]>
         </query>
         <hint name="org.hibernate.comment" value="Get Parents By ID"/>
@@ -87,7 +76,7 @@
             (SELECT * FROM file_name f
             INNER JOIN tree_Path t ON f.id = t.descendant
             WHERE t.ancestor=:id AND t.descendant!=t.ancestor) p
-            WHERE p.descendant = t.descendant AND t.descendant!=t.ancestor
+            WHERE p.descendant = t.descendant
             GROUP BY p.id, p.name, l.level
             ]]>
         </query>

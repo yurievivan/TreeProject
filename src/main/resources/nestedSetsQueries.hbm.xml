@@ -15,6 +15,7 @@
            WHERE child.id = :id
             ]]>   
         </query>
+        <hint name="org.hibernate.readOnly" value="true"/>
         <hint name="org.hibernate.comment" value="Get Path By ID"/>
     </named-native-query>
     
