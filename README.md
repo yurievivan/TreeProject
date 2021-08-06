@@ -54,6 +54,7 @@
 <h2>Materialized Path</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/454/89c/f90/45489cf9091a01a561fbfda628825e4c.png" alt="Materialized Path"></div>
 </br></br>
+<p>The figure shows an example of the "Materialized Path" model. The idea behind this model is to store the full path for each node in the tree. The path contains a chain of all ancestors for each node. By the number of separators in the path, you can determine the nesting depth of the node. The Materialized Path model is the clearest and most intuitive tree view.</>
 <p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/path/enumeration/tree">path.enumeration.tree</a>.</p>
 <p><b>Entity: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/path/enumeration/tree/Files.java">Files</a>.</p>
 <p><b>Data Access Object: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/path/enumeration/tree/FilesDao.java">FilesDao</a>.</p>
