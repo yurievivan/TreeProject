@@ -18,6 +18,7 @@
 <h2>Adjacency List</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/b2c/ee6/216/b2cee6216e8a723f590d55d1223261a6.png" alt="Adjacency List"></div>
 </br></br>
+<p>The idea of the Adjacency List data structure is to store information about its immediate parent for each node of the tree. In a table view, each row in the TREE table has an additional PARENT_ID field that specifies the ID of the parent node. This model makes it possible to get a list of both descendants and ancestors based on the identifiers of the node (ID) and its parent (PARENT_ID).</p>
 <p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/adjacency/list/tree">adjacency.list.tree</a>.</p>
 <p><b>Entity: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/adjacency/list/tree/Node.java">Node</a>.</p>
 <p><b>Data Access Object: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/adjacency/list/tree/NodeDao.java">NodeDao</a>.</p>
