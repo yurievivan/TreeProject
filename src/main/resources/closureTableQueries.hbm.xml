@@ -68,16 +68,13 @@
                         result-set-mapping="FileNameWithLevelMapping">
         <query>
             <![CDATA[         
-            SELECT p.id, p.name, count(*) - l.level AS level
+            SELECT p.id, p.name, DENSE_RANK() OVER (ORDER BY COUNT(*) ASC) AS LEVEL
             FROM tree_Path t,
-            (SELECT count(*) -1 AS level
-            FROM tree_path
-            WHERE descendant = :id) l,
             (SELECT * FROM file_name f
             INNER JOIN tree_Path t ON f.id = t.descendant
             WHERE t.ancestor=:id AND t.descendant!=t.ancestor) p
             WHERE p.descendant = t.descendant
-            GROUP BY p.id, p.name, l.level
+            GROUP BY p.id, p.name
             ]]>
         </query>
         <hint name="org.hibernate.comment" value="Get Сhildren By ID"/>

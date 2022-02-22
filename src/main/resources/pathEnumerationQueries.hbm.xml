@@ -10,8 +10,7 @@
                         result-set-mapping="FilesWithLevelMapping">
         <query> 
             <![CDATA[        
-            SELECT *, ( length(path) - length(replace(path, :delimiter, ''))
-            - (length(:parentPath) - length(replace(:parentPath, :delimiter, '')) + 1) + 1) as level 
+            SELECT *, DENSE_RANK() OVER (ORDER BY (length(path) - length(replace(path, :delimiter, ''))) ASC) AS LEVEL
             FROM files 
             WHERE path like REPLACE (:parentPath || :delimiter ||'%','\','\\')
             ]]>

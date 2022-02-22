@@ -57,7 +57,7 @@
             SELECT t.id, t.name, t.parent_id, level+1
             FROM tree t, r
             WHERE t.id = r.parent_id )
-            SELECT id, name, parent_id, (SELECT max(level) FROM r) - level + 1 AS level
+            SELECT id, name, parent_id, ROW_NUMBER() OVER (ORDER BY level DESC) AS level
             FROM r
             ]]>
         </query>

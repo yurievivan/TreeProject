@@ -60,17 +60,14 @@
     <named-native-query name="getAllСhildren" 
                         result-set-mapping="NestedSetsTreeWithLevelMapping">
         <query>
-            <![CDATA[         
-           with node as
-            (SELECT descendant.id, descendant.name, descendant.lft, descendant.rgt, COUNT(*) AS level
+            <![CDATA[
+            SELECT descendant.id, descendant.name, descendant.lft, descendant.rgt, DENSE_RANK() OVER (ORDER BY COUNT(*) ASC) AS LEVEL
             FROM
-	    (SELECT ch.*
-             FROM nested_sets n, nested_sets ch
-             WHERE n.id = :id AND ch.lft > n.lft AND ch.rgt < n.rgt) descendant, nested_sets parent
+                (SELECT ch.*
+                FROM nested_sets n, nested_sets ch
+                WHERE n.id = :id AND ch.lft > n.lft AND ch.rgt < n.rgt) descendant, nested_sets parent
             WHERE descendant.lft BETWEEN parent.lft AND parent.rgt
-            GROUP BY descendant.id, descendant.name, descendant.lft, descendant.rgt)
-            SELECT id, name, lft, rgt, (level - (SELECT min(level) FROM node) +1) as level
-            FROM node
+            GROUP BY  descendant.id, descendant.name, descendant.lft, descendant.rgt
             ]]>
         </query>
         <hint name="org.hibernate.comment" value="Get Сhildren By ID"/>
