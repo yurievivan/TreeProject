@@ -107,7 +107,7 @@
     </named-native-query>
     
     <sql-result-set-mapping name="NestedSetsTreeWithLevelMapping">
-        <entity-result entity-class="nested.sets.tree.NestedSetsTree"/>
+        <entity-result entity-class="improved.nested.sets.tree.NestedSetsTree"/>
         <column-result name="level" class="java.lang.Integer"/>
     </sql-result-set-mapping>
     
