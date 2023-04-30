@@ -30,7 +30,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public void save(FileName fileName) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(fileName);
+        session.persist(fileName);
         session.getTransaction().commit();
     }
 
@@ -41,7 +41,7 @@ public class FileNameDao implements TreeDao<FileName> {
         Transaction transaction = session.getTransaction();
         transaction.begin();
         for (int i = 0; i < fileNames.size(); i++) {
-            session.save(fileNames.get(i));
+            session.persist(fileNames.get(i));
             if ((i + 1) % batchSize == 0) {
                 // Flush and clear the cache every batch
                 session.flush();
@@ -63,7 +63,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public List<FileName> getAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<FileName> fileNames = session.createQuery("from FileName").list();
+        List<FileName> fileNames = session.createQuery("from FileName", FileName.class).list();
         session.getTransaction().commit();
         return fileNames;
     }
@@ -72,7 +72,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public Map<Integer, List<FileName>> getAllChildren(FileName fileName) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> children = session.createNamedQuery("getAllСhildren").setParameter("id", fileName.getId()).getResultList();
+        List<Object[]> children = session.createNamedQuery("getAllСhildren", Object[].class).setParameter("id", fileName.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, List<FileName>> result = new HashMap<>();
         children.forEach(rec -> {
@@ -88,7 +88,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public Map<Integer, FileName> getAllParents(FileName fileName) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> parents = session.createNamedQuery("getAllParents").setParameter("id", fileName.getId()).getResultList();
+        List<Object[]> parents = session.createNamedQuery("getAllParents", Object[].class).setParameter("id", fileName.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, FileName> result = new HashMap<>();
         parents.forEach(rec -> {
@@ -160,7 +160,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public List<FileName> getByName(String name) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<FileName> nodes = session.createQuery("from FileName where name = :name").setParameter("name", name).list();
+        List<FileName> nodes = session.createQuery("from FileName where name = :name", FileName.class).setParameter("name", name).list();
         session.getTransaction().commit();
         return nodes;
     }

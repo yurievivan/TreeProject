@@ -16,12 +16,16 @@ public class App {
     private static final Logger LOG = LogManager.getLogger(App.class);
 
     public static void main(String... args) {
-        File file = new File(DataStorage.INIT.getValue());
-        FileNameDao dao = new FileNameDao();
-        TreeInitialization<FileName> treeInit = new ClosureTreeInitialization(file);
-        treeInit.initTree();
-        dao.save(treeInit.getTree());
-        List<FileName> nodes = dao.getAll();
-        nodes.forEach(node -> LOG.info(dao.getPath(node)));
+        try {
+            File file = new File(DataStorage.INIT.getValue());
+            FileNameDao dao = new FileNameDao();
+            TreeInitialization<FileName> treeInit = new ClosureTreeInitialization(file);
+            treeInit.initTree();
+            dao.save(treeInit.getTree());
+            List<FileName> nodes = dao.getAll();
+            nodes.forEach(node -> LOG.info(dao.getPath(node)));
+        } finally {
+            HibernateUtil.close();
+        }
     }
 }

@@ -31,7 +31,7 @@ public class NodeDao implements TreeDao<Node> {
     public void save(Node node) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(node);
+        session.persist(node);
         session.getTransaction().commit();
     }
 
@@ -42,7 +42,7 @@ public class NodeDao implements TreeDao<Node> {
         Transaction transaction = session.getTransaction();
         transaction.begin();
         for (int i = 0; i < nodes.size(); i++) {
-            session.save(nodes.get(i));
+            session.persist(nodes.get(i));
             if ((i + 1) % batchSize == 0) {
                 // Flush and clear the cache every batch
                 session.flush();
@@ -64,7 +64,7 @@ public class NodeDao implements TreeDao<Node> {
     public List<Node> getAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Node> nodes = session.createQuery("from Node").list();
+        List<Node> nodes = session.createQuery("from Node", Node.class).list();
         session.getTransaction().commit();
         return nodes;
     }
@@ -73,7 +73,7 @@ public class NodeDao implements TreeDao<Node> {
     public Map<Integer, List<Node>> getAllChildren(Node node) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> children = session.createNamedQuery("getAllСhildren").setParameter("id", node.getId()).getResultList();
+        List<Object[]> children = session.createNamedQuery("getAllСhildren", Object[].class).setParameter("id", node.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, List<Node>> result = new HashMap<>();
         children.forEach(rec -> {
@@ -89,7 +89,7 @@ public class NodeDao implements TreeDao<Node> {
     public Map<Integer, Node> getAllParents(Node node) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> parents = session.createNamedQuery("getAllParents").setParameter("id", node.getId()).getResultList();
+        List<Object[]> parents = session.createNamedQuery("getAllParents", Object[].class).setParameter("id", node.getId()).getResultList();
         session.getTransaction().commit();
         Map<Integer, Node> result = new HashMap<>();
         parents.forEach(rec -> {
@@ -150,7 +150,7 @@ public class NodeDao implements TreeDao<Node> {
     public List<Node> getByName(String name) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Node> nodes = session.createQuery("from Node where name = :name").setParameter("name", name).list();
+        List<Node> nodes = session.createQuery("from Node where name = :name", Node.class).setParameter("name", name).list();
         session.getTransaction().commit();
         return nodes;
     }

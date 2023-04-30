@@ -45,7 +45,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
     public List<NestedSetsTree> getAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<NestedSetsTree> nestedSets = session.createQuery("from NestedSetsTree").list();
+        List<NestedSetsTree> nestedSets = session.createQuery("from NestedSetsTree", NestedSetsTree.class).list();
         session.getTransaction().commit();
         return nestedSets;
     }
@@ -54,7 +54,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
     public List<NestedSetsTree> getByName(String name) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<NestedSetsTree> nodes = session.createQuery("from NestedSetsTree where name = :name").setParameter("name", name).list();
+        List<NestedSetsTree> nodes = session.createQuery("from NestedSetsTree where name = :name", NestedSetsTree.class).setParameter("name", name).list();
         session.getTransaction().commit();
         return nodes;
     }
@@ -63,7 +63,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
     public void save(NestedSetsTree nestedSet) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(nestedSet);
+        session.persist(nestedSet);
         session.getTransaction().commit();
     }
 
@@ -90,7 +90,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         }
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<NestedSetsTree> children = session.createNamedQuery("getAllСhildren")
+        List<NestedSetsTree> children = session.createNamedQuery("getAllСhildren", NestedSetsTree.class)
                 .setParameter("id", nestedSet.getId())
                 .setParameter("parentLevel", nestedSet.getLevel()).getResultList();
         session.getTransaction().commit();
@@ -107,7 +107,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
     public Map<Integer, NestedSetsTree> getAllParents(NestedSetsTree nestedSet) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<NestedSetsTree> parents = session.createNamedQuery("getAllParents").setParameter("id", nestedSet.getId()).getResultList();
+        List<NestedSetsTree> parents = session.createNamedQuery("getAllParents", NestedSetsTree.class).setParameter("id", nestedSet.getId()).getResultList();
         session.getTransaction().commit();
         return parents.stream().collect(Collectors.toMap(NestedSetsTree::getLevel, Function.identity()));
     }
@@ -142,7 +142,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         Transaction transaction = session.getTransaction();
         transaction.begin();
         for (int i = 0; i < nestedSet.size(); i++) {
-            session.save(nestedSet.get(i));
+            session.persist(nestedSet.get(i));
             if ((i + 1) % batchSize == 0) {
                 // Flush and clear the cache every batch
                 session.flush();
@@ -164,7 +164,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         session.beginTransaction();
         session.createNativeQuery(String.format(UPDATE_LEFT_ADD_OP, delta, right)).executeUpdate();
         session.createNativeQuery(String.format(UPDATE_RIGHT_ADD_OP, delta, right)).executeUpdate();
-        nodes.forEach(session::save);
+        nodes.forEach(session::persist);
         session.getTransaction().commit();
         updateLevelByParentId(parentNode);
     }

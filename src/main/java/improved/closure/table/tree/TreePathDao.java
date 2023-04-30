@@ -25,7 +25,7 @@ public class TreePathDao implements Dao<TreePath> {
     public List<TreePath> getAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<TreePath> treePaths = session.createQuery("from TreePath").list();
+        List<TreePath> treePaths = session.createQuery("from TreePath", TreePath.class).list();
         session.getTransaction().commit();
         return treePaths;
     }
@@ -34,7 +34,7 @@ public class TreePathDao implements Dao<TreePath> {
     public void save(TreePath t) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(t);
+        session.persist(t);
         session.getTransaction().commit();
     }
 
@@ -45,7 +45,7 @@ public class TreePathDao implements Dao<TreePath> {
         Transaction transaction = session.getTransaction();
         transaction.begin();
         for (int i = 0; i < treePaths.size(); i++) {
-            session.save(treePaths.get(i));
+            session.persist(treePaths.get(i));
             if ((i + 1) % batchSize == 0) {
                 // Flush and clear the cache every batch
                 session.flush();
@@ -58,7 +58,7 @@ public class TreePathDao implements Dao<TreePath> {
     public void update(TreePath t) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.update(t);
+        session.merge(t);
         session.getTransaction().commit();
     }
 
@@ -66,7 +66,7 @@ public class TreePathDao implements Dao<TreePath> {
     public void delete(TreePath t) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.delete(t);
+        session.remove(t);
         session.getTransaction().commit();
     }
 

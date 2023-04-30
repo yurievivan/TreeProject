@@ -32,7 +32,7 @@ public class FilesDao implements TreeDao<Files> {
     public void save(Files files) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(files);
+        session.persist(files);
         session.getTransaction().commit();
     }
 
@@ -43,7 +43,7 @@ public class FilesDao implements TreeDao<Files> {
         Transaction transaction = session.getTransaction();
         transaction.begin();
         for (int i = 0; i < files.size(); i++) {
-            session.save(files.get(i));
+            session.persist(files.get(i));
             if ((i + 1) % batchSize == 0) {
                 // Flush and clear the cache every batch
                 session.flush();
@@ -68,7 +68,7 @@ public class FilesDao implements TreeDao<Files> {
     public List<Files> getAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Files> files = session.createQuery("from Files").list();
+        List<Files> files = session.createQuery("from Files", Files.class).list();
         session.getTransaction().commit();
         return files;
     }
@@ -77,7 +77,7 @@ public class FilesDao implements TreeDao<Files> {
     public List<Files> getByName(String name) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Files> nodes = session.createQuery("from Files where name = :name")
+        List<Files> nodes = session.createQuery("from Files where name = :name", Files.class)
                 .setParameter("name", name)
                 .list();
         session.getTransaction().commit();
@@ -88,7 +88,7 @@ public class FilesDao implements TreeDao<Files> {
     public Map<Integer, List<Files>> getAllChildren(Files files) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> children = session.createNamedQuery("getAllСhildren")
+        List<Object[]> children = session.createNamedQuery("getAllСhildren", Object[].class)
                 .setParameter("delimiter", File.separator)
                 .setParameter("parentPath", files.getPath())
                 .getResultList();
@@ -107,7 +107,7 @@ public class FilesDao implements TreeDao<Files> {
     public Map<Integer, Files> getAllParents(Files files) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Object[]> parents = session.createNamedQuery("getAllParents")
+        List<Object[]> parents = session.createNamedQuery("getAllParents", Object[].class)
                 .setParameter("delimiter", File.separator)
                 .setParameter("id", files.getId())
                 .getResultList();
@@ -132,7 +132,7 @@ public class FilesDao implements TreeDao<Files> {
         });
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        nodes.forEach(session::save);
+        nodes.forEach(session::persist);
         session.getTransaction().commit();
     }
 
@@ -161,7 +161,7 @@ public class FilesDao implements TreeDao<Files> {
     public Files getRoot(Files files) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query<Files> result = session.createNamedQuery("getRoot")
+        Query<Files> result = session.createNamedQuery("getRoot", Files.class)
                 .setParameter("path", files.getPath())
                 .setParameter("delimiter", File.separator);
         Files root = result.getSingleResult();
