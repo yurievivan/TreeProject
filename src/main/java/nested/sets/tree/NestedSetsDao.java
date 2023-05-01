@@ -75,9 +75,9 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         long delta = right - left + 1L;
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNamedQuery("delete").setParameter("id", nestedSet.getId()).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_LEFT_DELETE_OP, delta, left)).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_RIGHT_DELETE_OP, delta, right)).executeUpdate();
+        session.createNamedMutationQuery("delete").setParameter("id", nestedSet.getId()).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_LEFT_DELETE_OP, delta, left)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_RIGHT_DELETE_OP, delta, right)).executeUpdate();
         session.getTransaction().commit();
     }
 
@@ -121,10 +121,10 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         String delimiter = nestedSet.getDelimiter();
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query<String> result = session.createNamedQuery("getPath")
+        Query result = session.createNamedQuery("getPath", Object[].class)
                 .setParameter("delimiter", delimiter)
                 .setParameter("id", nestedSet.getId());
-        String path = result.getSingleResult();
+        String path = (String) result.getSingleResult();
         session.getTransaction().commit();
         return path;
     }
@@ -166,8 +166,8 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         updateTreeNodes(nodes, right - 1L);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNativeQuery(String.format(UPDATE_LEFT_ADD_OP, delta, right)).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_RIGHT_ADD_OP, delta, right)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_LEFT_ADD_OP, delta, right)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_RIGHT_ADD_OP, delta, right)).executeUpdate();
         nodes.forEach(session::persist);
         session.getTransaction().commit();
     }
@@ -189,11 +189,11 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
         }
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNativeQuery(String.format(UPDATE_LEFT_ADD_OP, subNodeSize, parentRight)).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_RIGHT_ADD_OP, subNodeSize, parentRight)).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_SUBTREE, subNodeIndex, subNodeIndex, subNode.getId())).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_LEFT_DELETE_OP, subNodeSize, subNodeRight)).executeUpdate();
-        session.createNativeQuery(String.format(UPDATE_RIGHT_DELETE_OP, subNodeSize, subNodeRight)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_LEFT_ADD_OP, subNodeSize, parentRight)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_RIGHT_ADD_OP, subNodeSize, parentRight)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_SUBTREE, subNodeIndex, subNodeIndex, subNode.getId())).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_LEFT_DELETE_OP, subNodeSize, subNodeRight)).executeUpdate();
+        session.createNativeMutationQuery(String.format(UPDATE_RIGHT_DELETE_OP, subNodeSize, subNodeRight)).executeUpdate();
         session.getTransaction().commit();
     }
 

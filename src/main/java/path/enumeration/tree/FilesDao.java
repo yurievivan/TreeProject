@@ -57,7 +57,7 @@ public class FilesDao implements TreeDao<Files> {
     public void delete(Files files) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNamedQuery("delete")
+        session.createNamedMutationQuery("delete")
                 .setParameter("path", files.getPath())
                 .setParameter("delimiter", File.separator)
                 .executeUpdate();
@@ -144,7 +144,7 @@ public class FilesDao implements TreeDao<Files> {
         String subNodeParentPath = StringUtils.removeEnd(subNode.getPath(), File.separator + subNode.getName());
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNamedQuery("move")
+        session.createNamedMutationQuery("move")
                 .setParameter("subNodeParentPath", subNodeParentPath)
                 .setParameter("parentPath", parentNode.getPath())
                 .setParameter("delimiter", File.separator)

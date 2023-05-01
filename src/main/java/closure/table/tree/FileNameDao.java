@@ -55,7 +55,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public void delete(FileName fileName) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNamedQuery("delete").setParameter("id", fileName.getId()).executeUpdate();
+        session.createNamedMutationQuery("delete").setParameter("id", fileName.getId()).executeUpdate();
         session.getTransaction().commit();
     }
 
@@ -107,7 +107,7 @@ public class FileNameDao implements TreeDao<FileName> {
         nodes.forEach(this::save);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        nodes.forEach(n -> session.createNamedQuery("addChildren")
+        nodes.forEach(n -> session.createNamedMutationQuery("addChildren")
                 .setParameter("parentId", parentNode.getId())
                 .setParameter("childId", n.getId())
                 .executeUpdate()
@@ -122,11 +122,11 @@ public class FileNameDao implements TreeDao<FileName> {
         }
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-                session.createNamedQuery("move-deleteParents")
+                session.createNamedMutationQuery("move-deleteParents")
                 .setParameter("parentId", parentNode.getId())
                 .setParameter("childId", subNode.getId())
                 .executeUpdate();
-        session.createNamedQuery("move-addChildren")
+        session.createNamedMutationQuery("move-addChildren")
                 .setParameter("parentId", parentNode.getId())
                 .setParameter("childId", subNode.getId())
                 .executeUpdate();
@@ -138,10 +138,10 @@ public class FileNameDao implements TreeDao<FileName> {
         String delimiter = fileName.getDelimiter();
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query<String> result = session.createNamedQuery("getPath")
+        Query result = session.createNamedQuery("getPath", Object[].class)
                 .setParameter("id", fileName.getId())
                 .setParameter("delimiter", delimiter);
-        String path = result.getSingleResult();
+        String path = (String) result.getSingleResult();
         session.getTransaction().commit();
         return path;
     }

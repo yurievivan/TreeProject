@@ -56,7 +56,7 @@ public class NodeDao implements TreeDao<Node> {
     public void delete(Node node) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.createNamedQuery("delete").setParameter("id", node.getId()).executeUpdate();
+        session.createNamedMutationQuery("delete").setParameter("id", node.getId()).executeUpdate();
         session.getTransaction().commit();
     }
 
@@ -108,10 +108,10 @@ public class NodeDao implements TreeDao<Node> {
         String delimiter = node.getDelimiter();
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query<String> result = session.createNamedQuery("getPath")
+        Query result = session.createNamedQuery("getPath", Object[].class)
                 .setParameter("id", node.getId())
                 .setParameter("delimiter", delimiter);
-        String path = result.getSingleResult();
+        String path = (String) result.getSingleResult();
         session.getTransaction().commit();
         return path;
     }
