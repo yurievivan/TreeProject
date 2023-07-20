@@ -1,4 +1,4 @@
-<h2 align="center"> Ways to store trees in relational databases using ORM Hibernate.</h1>
+<h1 align="center"> Ways to store trees in relational databases using ORM Hibernate.</h1>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/5ce/aba/82c/5ceaba82c9e579300eea7b8ed9e8c2f7.PNG"></div>
 </br></br>
 <p>A folder structure on the file system is used as a tree, which is loaded into the database table(s). The nesting level in my SQL queries is a calculated value, it's mean that value is not present in the table(s). Except for the designs "Closure Table" and "Nested sets", which have two implementations with and without column name level in DB table.</p>
