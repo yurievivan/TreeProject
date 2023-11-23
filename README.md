@@ -41,6 +41,15 @@
 <h2>Nested sets</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/770/98a/934/77098a9345c609ea0057827bef6c5249.png" alt="Nested sets"></div>
 </br></br>
+<p>The Nested sets model is a technique for representing hierarchical data in relational databases and based on Nested Intervals. There is also no need to use recursive queries to get a list of parents or children.</p>
+<p>Let's get the descendants and ancestors for node C, whose Left = 2 and Right = 11.</p>
+<b>Example SQL query to get descendants:</b>
+<div>SELECT * FROM NESTED_SETS WHERE LFT > 2 AND RGT < 11</div>
+<p>Result: G, F, H, K.</p>
+<b>Example SQL query to get ancestors:</b>
+<div>SELECT * FROM NESTED_SETS WHERE LFT < 2 AND RGT > 11</div>
+<p>Result: A.</p>
+ </br>
 <p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/nested/sets/tree">nested.sets.tree</a>.</p>
 <p><b>Entity: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/nested/sets/tree/NestedSetsTree.java">NestedSetsTree</a>.</p>
 <p><b>Data Access Object: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/nested/sets/tree/NestedSetsDao.java">NestedSetsDao</a>.</p>
