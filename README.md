@@ -26,6 +26,7 @@
 <h2>Closure Table</h2>
 <div align="center"><img src="https://hsto.org/getpro/habr/upload_files/6a2/74f/627/6a274f627873c43d43b18ca5de82a8c1.png" alt="Closure Table"></div>
 </br></br>
+<p>The Closure Table solution is one way of storing hierarchies in two tables and query them efficiently without having to create recursive queries. It involves storing all paths and node names existing in the tree in separate tables.</p>
 <p><b>Source package: </b><a href="https://github.com/yurievivan/TreeProject/tree/master/src/main/java/closure/table/tree">closure.table.tree</a>.</p>
 <p><b>Entities: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/FileName.java">FileName</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/TreePath.java">TreePath</a>.</p>
 <p><b>Data Access Objects: </b><a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/FileNameDao.java">FileNameDao</a>, <a href="https://github.com/yurievivan/TreeProject/blob/master/src/main/java/closure/table/tree/TreePathDao.java">TreePathDao</a>.</p>
