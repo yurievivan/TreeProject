@@ -14,12 +14,8 @@ import show.result.report.Main;
  * @author ivan.yuriev
  */
 public enum DataStorage {
-    GET_CHILDREN("getAllChildren"),
-    GET_PARENTS("getAllParents"),
     INIT("init"),
-    ADD("add"),
-    MOVE("move"),
-    DELETE("delete");
+    ADD("add");
     private static final String DATA_PROPERTY_FILE = "data.properties";
     private static final Logger LOG = LogManager.getLogger(DataStorage.class);
     public static final String DELIMITER = ";";
