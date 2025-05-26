@@ -34,7 +34,7 @@ public class NestedSetsDao implements TreeDao<NestedSetsTree> {
     public Optional<NestedSetsTree> get(long id) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        NestedSetsTree nestedSet = session.get(NestedSetsTree.class, id);
+        NestedSetsTree nestedSet = session.find(NestedSetsTree.class, id);
         session.getTransaction().commit();
         return Optional.ofNullable(nestedSet);
     }

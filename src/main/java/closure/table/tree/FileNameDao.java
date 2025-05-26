@@ -21,7 +21,7 @@ public class FileNameDao implements TreeDao<FileName> {
     public Optional<FileName> get(long id) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        FileName fileName = session.get(FileName.class, id);
+        FileName fileName = session.find(FileName.class, id);
         session.getTransaction().commit();
         return Optional.ofNullable(fileName);
     }

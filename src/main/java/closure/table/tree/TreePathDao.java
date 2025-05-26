@@ -16,7 +16,7 @@ public class TreePathDao implements Dao<TreePath> {
     public Optional<TreePath> get(long id) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        TreePath treePath = session.get(TreePath.class, id);
+        TreePath treePath = session.find(TreePath.class, id);
         session.getTransaction().commit();
         return Optional.ofNullable(treePath);
     }

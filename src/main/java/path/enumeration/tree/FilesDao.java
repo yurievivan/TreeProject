@@ -23,7 +23,7 @@ public class FilesDao implements TreeDao<Files> {
     public Optional<Files> get(long id) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Files files = session.get(Files.class, id);
+        Files files = session.find(Files.class, id);
         session.getTransaction().commit();
         return Optional.ofNullable(files);
     }
