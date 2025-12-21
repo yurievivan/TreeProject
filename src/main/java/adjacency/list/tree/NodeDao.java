@@ -22,7 +22,7 @@ public class NodeDao implements TreeDao<Node> {
     public Optional<Node> get(long id) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Node node = session.get(Node.class, id);
+        Node node = session.find(Node.class, id);
         session.getTransaction().commit();
         return Optional.ofNullable(node);
     }
